@@ -2,27 +2,44 @@
 #define CARDINAL_H
 
 #include <cstddef>
-
-
-enum class CardinalType {
-	Finite,
-	Infinite
-};
+#include <stdexcept>
 
 
 class Cardinal {
     public:
+        Cardinal();
+
         static Cardinal Finite(size_t value);
         static Cardinal Infinite();
+        static Cardinal InfinitePlus(size_t n);
+        static Cardinal Omega(size_t omegaCoeff, size_t finitePart);
 
         bool IsFinite() const;
-        size_t GetValue() const;
+        bool IsInfinite() const;
+
+        size_t GetFiniteValue() const;
+        size_t GetOmegaCoeff() const;
+        size_t GetFinitePart() const;
+
+        Cardinal operator+(const Cardinal& other) const;
+        Cardinal operator+(size_t n) const;
+        Cardinal operator-(const Cardinal& other) const;
+        Cardinal operator-(size_t n) const;
+
+        bool operator==(const Cardinal& other) const;
+        bool operator!=(const Cardinal& other) const;
+        bool operator<(const Cardinal& other) const;
+        bool operator<=(const Cardinal& other) const;
+        bool operator>(const Cardinal& other) const;
+        bool operator>=(const Cardinal& other) const;
 
     private:
-        Cardinal(CardinalType type, size_t value = 0);
+        Cardinal(bool finite, size_t omegaCoeff, size_t finitePart);
+
+        bool finite;
         
-        CardinalType type;
-        size_t value;
+        size_t omegaCoeff;
+        size_t finitePart;
 };
 
 

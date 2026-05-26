@@ -1,90 +1,70 @@
 #include "tests.h"
-
 #include "../Stream.h"
 #include "../LazySequence.h"
 #include "../Cardinal.h"
-
 #include <iostream>
 #include <chrono>
-
+#include <stdexcept>
 
 template <class T>
 void TestStream(const char* typeName) {
     using namespace std::chrono;
     std::cout << "=========================================\n";
-    std::cout << "✅ TESTS FOR Stream<" << typeName << ">\n";
+    std::cout << "TESTS FOR Stream<" << typeName << ">\n";
 
     T arr[] = {T(1), T(2), T(3), T(4), T(5)};
     LazySequence<T> seq(arr, 5);
 
-    ReadOnlyStream<T> stream(&seq);
-    stream.Open();
+    ReadOnlyStream<T> input(&seq);
+    input.Open();
     T sum = T(0);
-    int count = 0;
-
+    int cnt = 0;
     while (true) {
         try {
-            sum = sum + stream.Read();
-            count++;
+            sum = sum + input.Read();
+            cnt++;
         } catch (const std::out_of_range&) {
             break;
         }
     }
-
-    if (count == 5 && sum == T(15)) {
+    if (cnt == 5 && sum == T(15))
         std::cout << "✅ ReadOnlyStream read all\n";
-    } else {
+    else
         std::cout << "❌ ReadOnlyStream read failed\n";
-    }
-    
-    stream.Close();
-    stream.Open();
-    stream.Seek(2);
+    input.Close();
 
-    if (stream.Read() == T(3)) {
+    input.Open();
+    input.Seek(2);
+    if (input.Read() == T(3))
         std::cout << "✅ Seek and read\n";
-    } else {
+    else
         std::cout << "❌ Seek failed\n";
-    }
-    
-    stream.Close();
+    input.Close();
 
     MutableArraySequence<T> dest;
-    WriteOnlyStream<T> wstream(&dest);
-
-    wstream.Open();
-
-    for (int i = 0; i < 3; i++) {
-        wstream.Write(T(i * 10));
-    }
-
-    wstream.Close();
-
-    if (dest.getLength() == 3 && dest.get(0) == T(0) && dest.get(2) == T(20)) {
+    WriteOnlyStream<T> output(&dest);
+    output.Open();
+    for (int i = 0; i < 3; ++i)
+        output.Write(T(i * 10));
+    output.Close();
+    if (dest.getLength() == 3 && dest.get(0) == T(0) && dest.get(2) == T(20))
         std::cout << "✅ WriteOnlyStream\n";
-    } else {
+    else
         std::cout << "❌ WriteOnlyStream failed\n";
-    }
 
     if constexpr (std::is_same<T, int>::value) {
         MutableArraySequence<int> init;
         init.append(1); init.append(1);
-
-        auto fib = [](const Sequence<int>& s) -> int {
+        auto fibGen = [](const Sequence<int>& s) -> int {
             return s.get(s.getLength()-1) + s.get(s.getLength()-2);
         };
-
-        LazySequence<int> infSeq(fib, init, Cardinal::Infinite());
+        LazySequence<int> infSeq(fibGen, init, Cardinal::Infinite());
         ReadOnlyStream<int> fibStream(&infSeq);
-
         std::cout << "⏳ Stress test (1M elements through stream)...\n";
         auto start = steady_clock::now();
         fibStream.Open();
-
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 1000000; ++i)
             fibStream.Read();
-        }
-
         fibStream.Close();
         auto end = steady_clock::now();
         std::cout << "✅ Stress test: " << duration_cast<milliseconds>(end - start).count() << " ms\n";
@@ -92,7 +72,6 @@ void TestStream(const char* typeName) {
 
     std::cout << "=========================================\n\n";
 }
-
 
 template void TestStream<int>(const char*);
 template void TestStream<double>(const char*);

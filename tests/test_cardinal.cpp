@@ -1,7 +1,10 @@
 #include "tests.h"
+
 #include "../Cardinal.h"
+
 #include <iostream>
 #include <stdexcept>
+
 
 void TestCardinal() {
     std::cout << "=========================================\n";

@@ -1,13 +1,9 @@
 #include "tests/tests.h"
+#include "menu.h"
 
 int main() {
-    TestCardinal();
-    TestLazySequence<int>("int");
-    TestLazySequence<double>("double");
-    TestStream<int>("int");
-    TestStream<double>("double");
-    TestStateMachine<int, int>("int,int");
-    TestStateMachine<int, double>("int,double");
+    runAllTests();
+    runMenu();
     
     return 0;
 }

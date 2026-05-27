@@ -231,13 +231,11 @@ T LazySequence<T>::get(int index) const {
 template <class T>
 T LazySequence<T>::get(Cardinal index) const {
 	size_t localIdx = 0;
-
 	int segIdx = findSegment(index, localIdx);
 
 	if (segIdx == -1) throw std::out_of_range("Index out of range");
 
 	Segment* seg = segments.get(segIdx);
-
 	ensureMaterialized(seg, localIdx);
 
 	return seg->data->get(localIdx);

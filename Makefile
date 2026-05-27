@@ -3,7 +3,7 @@ CXXFLAGS = -std=c++17 -Wall -Wextra -g -I. -I../LAB_2
 ASAN_FLAGS = -fsanitize=address
 LDFLAGS =
 
-SRCS = main.cpp Cardinal.cpp tests/test_cardinal.cpp tests/test_lazy_sequence.cpp tests/test_stream.cpp tests/test_fsm.cpp
+SRCS = main.cpp Cardinal.cpp tests/test_cardinal.cpp tests/test_lazy_sequence.cpp tests/test_stream.cpp tests/test_fsm.cpp menu.cpp
 OBJS = $(SRCS:.cpp=.o)
 TARGET = lab4
 

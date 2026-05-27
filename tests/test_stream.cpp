@@ -4,6 +4,7 @@
 #include "../LazySequence.h"
 #include "../Cardinal.h"
 
+#include <cassert>
 #include <iostream>
 #include <chrono>
 #include <stdexcept>
@@ -12,9 +13,6 @@
 template <class T>
 void TestStream(const char *typeName) {
     using namespace std::chrono;
-    std::cout << "=========================================\n";
-    std::cout << "TESTS FOR Stream<" << typeName << ">\n";
-
     T arr[] = {T(1), T(2), T(3), T(4), T(5)};
     LazySequence<T> seq(arr, 5);
 
@@ -32,37 +30,26 @@ void TestStream(const char *typeName) {
         }
     }
 
-    if (cnt == 5 && sum == T(15))
-        std::cout << "✅ ReadOnlyStream read all\n";
-    else
-        std::cout << "❌ ReadOnlyStream read failed\n";
-
+    assert(cnt == 5);
+    assert(sum == T(15));
     input.Close();
 
     input.Open();
     input.Seek(2);
-
-    if (input.Read() == T(3))
-        std::cout << "✅ Seek and read\n";
-    else
-        std::cout << "❌ Seek failed\n";
-
+    assert(input.Read() == T(3));
     input.Close();
 
     MutableArraySequence<T> dest;
     WriteOnlyStream<T> output(&dest);
-
     output.Open();
 
     for (int i = 0; i < 3; i++)
         output.Write(T(i * 10));
 
     output.Close();
-
-    if (dest.getLength() == 3 && dest.get(0) == T(0) && dest.get(2) == T(20))
-        std::cout << "✅ WriteOnlyStream\n";
-    else
-        std::cout << "❌ WriteOnlyStream failed\n";
+    assert(dest.getLength() == 3);
+    assert(dest.get(0) == T(0));
+    assert(dest.get(2) == T(20));
 
     if constexpr (std::is_same<T, int>::value) {
         MutableArraySequence<int> init;
@@ -74,8 +61,6 @@ void TestStream(const char *typeName) {
 
         LazySequence<int> infSeq(fibGen, init, Cardinal::Infinite());
         ReadOnlyStream<int> fibStream(&infSeq);
-
-        std::cout << "⏳ Stress test (1M elements through stream)...\n";
         auto start = steady_clock::now();
         fibStream.Open();
 
@@ -84,11 +69,10 @@ void TestStream(const char *typeName) {
 
         fibStream.Close();
         auto end = steady_clock::now();
-
-        std::cout << "✅ Stress test: " << duration_cast<milliseconds>(end - start).count() << " ms\n";
+        std::cout << "⏳ Stress test (Stream): " << duration_cast<milliseconds>(end - start).count() << " ms\n";
     }
 
-    std::cout << "=========================================\n\n";
+    std::cout << "✅ Stream<" << typeName << "> passed\n\n";
 }
 
 

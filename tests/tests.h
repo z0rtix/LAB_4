@@ -8,7 +8,7 @@ template <class T> void TestLazySequence(const char *typeName);
 template <class T> void TestStream(const char *typeName);
 template <class TInput, class TOutput> void TestStateMachine(const char *typeName);
 
-static void runAllTests() {
+inline void runAllTests() {
     TestCardinal();
     TestLazySequence<int>("int");
     TestLazySequence<double>("double");

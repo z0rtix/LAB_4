@@ -1,19 +1,18 @@
 #include "menu.h"
-
-#include <iostream>
-#include <string>
-#include <chrono>
-#include <stdexcept>
-
 #include "Cardinal.h"
 #include "LazySequence.h"
 #include "Stream.h"
 #include "StateMachine.h"
 #include "tests/tests.h"
 
+#include <iostream>
+#include <string>
+#include <chrono>
+#include <stdexcept>
+
+
 using namespace std;
 
-// ---------- вспомогательный ввод ----------
 static void clearInput() {
 	cin.clear();
 	cin.ignore(100000, '\n');
@@ -49,7 +48,6 @@ static void pauseConsole() {
 	cin.get();
 }
 
-// ---------- печать последовательностей ----------
 template <class T>
 static void printFiniteSequence(const LazySequence<T>& seq, int limit = 30) {
 	cout << "[ ";
@@ -85,7 +83,7 @@ static void printSequenceInfo(const LazySequence<T>& seq) {
 	cout << "Материализовано элементов: " << seq.getMaterializedCount() << "\n";
 }
 
-// ---------- готовые генераторы ----------
+
 static LazySequence<long long>* createNaturalSequence() {
 	MutableArraySequence<long long> init;
 	init.append(0);
@@ -124,7 +122,7 @@ static LazySequence<long long>* createFibonacciSequence() {
 	return new LazySequence<long long>(gen, init, Cardinal::Infinite());
 }
 
-// ---------- ручное создание последовательности ----------
+
 static LazySequence<long long>* manualCreateSequence() {
 	cout << "\n====================================================\n";
 	cout << " СОЗДАНИЕ ПОСЛЕДОВАТЕЛЬНОСТИ\n";
@@ -174,7 +172,7 @@ static LazySequence<long long>* manualCreateSequence() {
 	return nullptr;
 }
 
-// ---------- демонстрация Фибоначчи ----------
+
 static void demoFibonacci() {
 	cout << "\n====================================================\n";
 	cout << " ДЕМОНСТРАЦИЯ БЕСКОНЕЧНОЙ ПОСЛЕДОВАТЕЛЬНОСТИ ФИБОНАЧЧИ\n";
@@ -217,7 +215,7 @@ static void demoFibonacci() {
 	pauseConsole();
 }
 
-// ---------- демонстрация автомата ----------
+
 static void demoStateMachine() {
 	cout << "\n====================================================\n";
 	cout << " ДЕМОНСТРАЦИЯ АВТОМАТА СОСТОЯНИЙ\n";
@@ -256,7 +254,7 @@ static void demoStateMachine() {
 	pauseConsole();
 }
 
-// ---------- операции ----------
+
 static void applyAppend(LazySequence<long long>*& seq) {
 	cout << "\nappend(value)\n";
 	cout << "Добавляет элемент в конец последовательности\n\n";
@@ -367,7 +365,7 @@ static void applyConcat(LazySequence<long long>*& seq) {
 	cout << "\n";
 }
 
-// ---------- песочница ----------
+
 static void playground() {
 	LazySequence<long long>* seq = manualCreateSequence();
 	if (!seq) {
@@ -429,7 +427,7 @@ static void playground() {
 	delete seq;
 }
 
-// ---------- глобальная последовательность ----------
+
 static LazySequence<long long>* globalSequence = nullptr;
 
 static void manualOperations() {
@@ -490,7 +488,7 @@ static void manualOperations() {
 	}
 }
 
-// ---------- запуск тестов ----------
+
 static void runAllTestsMenu() {
 	cout << "\n====================================================\n";
 	cout << " ЗАПУСК ВСЕХ ТЕСТОВ\n";
@@ -500,7 +498,7 @@ static void runAllTestsMenu() {
 	pauseConsole();
 }
 
-// ---------- стресс-тест ----------
+
 static void runFibonacciStress() {
 	cout << "\n====================================================\n";
 	cout << " СТРЕСС-ТЕСТ ФИБОНАЧЧИ\n";
@@ -512,6 +510,7 @@ static void runFibonacciStress() {
 	for (int i = 0; i < 1000000; i++) {
 		x = fib->get(i);
 	}
+    (void)x;
 	auto end = chrono::high_resolution_clock::now();
 	auto ms = chrono::duration_cast<chrono::milliseconds>(end - start).count();
 	cout << "\nВремя выполнения: " << ms << " мс\n";
@@ -520,7 +519,7 @@ static void runFibonacciStress() {
 	pauseConsole();
 }
 
-// ---------- таблица производительности ----------
+
 template <class Func>
 static long long measure(Func f) {
 	auto start = chrono::high_resolution_clock::now();
@@ -554,30 +553,27 @@ static void runPerformanceTable() {
 	pauseConsole();
 }
 
-// ---------- главное меню ----------
+
 void runMenu() {
 	while (true) {
-		cout << "\n====================================================\n";
-		cout << " ЛАБОРАТОРНАЯ РАБОТА\n";
-		cout << " ЛЕНИВЫЕ ПОСЛЕДОВАТЕЛЬНОСТИ И АВТОМАТЫ\n";
-		cout << "====================================================\n\n";
-		cout << "1. Демонстрация бесконечной последовательности Фибоначчи\n";
-		cout << "   (Fibonacci demo)\n\n";
-		cout << "2. Демонстрация автомата состояний\n";
-		cout << "   (State machine demo)\n\n";
-		cout << "3. Создать новую последовательность\n";
-		cout << "   (New sequence)\n\n";
-		cout << "4. Песочница операций\n";
-		cout << "   (Playground)\n\n";
-		cout << "5. Ручные операции над выбранной последовательностью\n";
-		cout << "   (Manual operations)\n\n";
-		cout << "6. Запустить все тесты\n";
-		cout << "   (Run all tests)\n\n";
-		cout << "7. Стресс-тест Фибоначчи\n";
-		cout << "   (Fibonacci stress test)\n\n";
-		cout << "8. Таблица производительности\n";
-		cout << "   (Performance table)\n\n";
-		cout << "0. Выход\n";
+		cout << "\n========================================\n            КОНСОЛЬНОЕ МЕНЮ\n========================================\n";
+		cout << "1. Демонстрация бесконечной последовательности Фибоначчи";
+		cout << "   (Fibonacci demo)\n";
+		cout << "2. Демонстрация автомата состояний";
+		cout << "   (State machine demo)\n";
+		cout << "3. Создать новую последовательность";
+		cout << "   (New sequence)\n";
+		cout << "4. Песочница операций";
+		cout << "   (Playground)\n";
+		cout << "5. Ручные операции над выбранной последовательностью";
+		cout << "   (Manual operations)\n";
+		cout << "6. Запустить все тесты";
+		cout << "   (Run all tests)\n";
+		cout << "7. Стресс-тест Фибоначчи";
+		cout << "   (Fibonacci stress test)\n";
+		cout << "8. Таблица производительности";
+		cout << "   (Performance table)\n";
+		cout << "0. Выход";
 		cout << "   (Exit)\n";
 
 		int cmd = readInt("\nВыберите пункт меню: ");

@@ -408,8 +408,9 @@ template <class T>
 LazySequence<T>* LazySequence<T>::concat(LazySequence<T>* lazySeq) const {
 	LazySequence<T>* newSeq = copy();
 
-	for (int i = 0; i < lazySeq->segments.getLength(); i++)
+	for (int i = 0; i < lazySeq->segments.getLength(); i++) {
 		newSeq->segments.append(new Segment(*lazySeq->segments.get(i)));
+	}
 
 	newSeq->totalLength = ordinalAdd(newSeq->totalLength, lazySeq->totalLength);
 

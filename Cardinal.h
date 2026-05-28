@@ -2,7 +2,6 @@
 #define CARDINAL_H
 
 #include <cstddef>
-#include <stdexcept>
 
 
 class Cardinal {

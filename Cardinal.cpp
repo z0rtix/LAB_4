@@ -1,5 +1,7 @@
 #include "Cardinal.h"
 
+#include <stdexcept>
+
 
 Cardinal::Cardinal() : finite(true), omegaCoeff(0), finitePart(0) {}
 

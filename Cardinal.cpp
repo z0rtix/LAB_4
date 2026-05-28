@@ -100,7 +100,9 @@ bool Cardinal::operator==(const Cardinal& other) const {
     return finite == other.finite && omegaCoeff == other.omegaCoeff && finitePart == other.finitePart;
 }
 
-bool Cardinal::operator!=(const Cardinal& other) const { return !(*this == other); }
+bool Cardinal::operator!=(const Cardinal& other) const {
+    return !(*this == other);
+}
 
 bool Cardinal::operator<(const Cardinal& other) const {
     if (finite != other.finite) return finite;

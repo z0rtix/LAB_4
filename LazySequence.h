@@ -59,6 +59,7 @@ class LazySequence : public Sequence<T> {
 		LazySequence<T>* prepend(T item) override;
 		LazySequence<T>* insertAt(T item, int index) override;
 		LazySequence<T>* set(T item, int index) override;
+
 		LazySequence<T>* removeFirst() override;
 		LazySequence<T>* removeLast() override;
 		LazySequence<T>* removeAt(int index) override;
@@ -77,8 +78,9 @@ class LazySequence : public Sequence<T> {
 		LazySequence<T>* where(std::function<bool(T)> pred) const;
 
 		Cardinal cardinalLength() const;
+
 		size_t getMaterializedCount() const;
-	};
+};
 
 
 template <class T>
@@ -449,8 +451,9 @@ LazySequence<T>* LazySequence<T>::map(std::function<T(T)> func) const {
 		if (seg->type == Segment::FiniteData) {
 			MutableArraySequence<T> mapped;
 
-			for (int j = 0; j < seg->data->getLength(); j++)
+			for (int j = 0; j < seg->data->getLength(); j++) {
 				mapped.append(func(seg->data->get(j)));
+			}
 
 			newSeq->segments.append(new Segment(mapped, seg->length));
 		} else {
@@ -460,19 +463,14 @@ LazySequence<T>* LazySequence<T>::map(std::function<T(T)> func) const {
 			auto gen = [self, func, capturedPrefix](const Sequence<T>& hist) -> T {
 				size_t nextIdx = hist.getLength();
 
-				Cardinal globalIdx = ordinalAdd(
-					capturedPrefix,
-					Cardinal::Finite(nextIdx)
-				);
+				Cardinal globalIdx = ordinalAdd(capturedPrefix,Cardinal::Finite(nextIdx));
 
 				return func(self->get(globalIdx));
 			};
 
 			MutableArraySequence<T> empty;
 
-			newSeq->segments.append(
-				new Segment(gen, empty, seg->length)
-			);
+			newSeq->segments.append(new Segment(gen, empty, seg->length));
 		}
 
 		prefix = ordinalAdd(prefix, seg->length);

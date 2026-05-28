@@ -7,6 +7,7 @@
 
 
 void TestCardinal() {
+    std::cout << "=====================================\n                 TESTS\n=====================================\n\n";
     Cardinal c = Cardinal::Finite(5);
     assert(c.IsFinite());
     assert(c.GetFiniteValue() == 5);
